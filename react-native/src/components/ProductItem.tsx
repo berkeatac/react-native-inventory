@@ -1,9 +1,12 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import { useState } from "react";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { Inventory } from "../store/inventory";
 import { convertDateToDDMMYYYY } from "../utils";
 
 export default ({ record: { item } }: { record: { item: Inventory } }) => {
-  const image = item.fields["Product Image"]
+  const [expanded, setExpanded] = useState(false);
+
+  const productImage = item.fields["Product Image"]
     ? {
         uri: item.fields["Product Image"],
         width: 85
@@ -24,7 +27,7 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
         }}
       >
         <Image
-          source={image}
+          source={productImage}
           style={
             item.fields["Product Image"] ? styles.image : styles.placeholder
           }
@@ -37,6 +40,16 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
             {convertDateToDDMMYYYY(item.createdTime)}
           </Text>
         </View>
+        <TouchableOpacity
+          onPress={() => setExpanded((expanded) => !expanded)}
+          style={styles.chevronButton}
+        >
+          {expanded ? (
+            <Image source={require("../assets/chevron-up.png")} />
+          ) : (
+            <Image source={require("../assets/chevron-down.png")} />
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -44,7 +57,7 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 80,
+    minHeight: 80,
     flex: 1,
     flexDirection: "row",
     padding: 8,
@@ -76,5 +89,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "400",
     lineHeight: 16
+  },
+  chevronButton: {
+    flex: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    width: 40,
+    height: 40
   }
 });
