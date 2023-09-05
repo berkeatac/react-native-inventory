@@ -39,8 +39,9 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
               onRefresh={() => dispatch(actions.fetchInventory())}
             />
           }
-          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-          style={{ padding: 16 }}
+          ItemSeparatorComponent={() => (
+            <View style={{ flex: 1, height: 12, width: "100%" }} />
+          )}
         />
       </SafeAreaView>
 
