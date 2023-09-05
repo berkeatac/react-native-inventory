@@ -18,7 +18,6 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
       <View
         style={{
           flex: 0,
-          flexDirection: "column",
           width: 85,
           height: "100%",
           justifyContent: "center",
@@ -33,23 +32,62 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
           }
         />
       </View>
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={{ flex: 1, flexDirection: "column" }}>
-          <Text style={styles.title}>{item.fields["Product Name"]}</Text>
-          <Text style={styles.date}>
-            {convertDateToDDMMYYYY(item.createdTime)}
-          </Text>
+      <View style={{ flex: 1, flexDirection: "column" }}>
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ flex: 1, flexDirection: "column" }}>
+            <Text style={styles.title}>{item.fields["Product Name"]}</Text>
+            <Text style={styles.date}>
+              {convertDateToDDMMYYYY(item.createdTime)}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setExpanded((expanded) => !expanded)}
+            style={styles.chevronButton}
+          >
+            {expanded ? (
+              <Image source={require("../assets/chevron-up.png")} />
+            ) : (
+              <Image source={require("../assets/chevron-down.png")} />
+            )}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => setExpanded((expanded) => !expanded)}
-          style={styles.chevronButton}
-        >
-          {expanded ? (
-            <Image source={require("../assets/chevron-up.png")} />
-          ) : (
-            <Image source={require("../assets/chevron-down.png")} />
-          )}
-        </TouchableOpacity>
+        {expanded && item.fields["Product Categories"] && (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              flexWrap: "wrap",
+              columnGap: 4,
+              rowGap: 6,
+              marginTop: 12
+            }}
+          >
+            {item.fields["Product Categories"].split(", ").map((category) => (
+              <View
+                style={{
+                  height: 26,
+                  borderRadius: 48,
+                  paddingHorizontal: 12,
+                  paddingVertical: 2,
+                  backgroundColor: "#D4E5FF"
+                }}
+              >
+                <Text
+                  key={category}
+                  style={{
+                    fontSize: 12,
+                    lineHeight: 22,
+                    fontWeight: "400",
+                    flex: 1
+                  }}
+                  numberOfLines={1}
+                >
+                  {category}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
       </View>
     </View>
   );
@@ -88,7 +126,8 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 12,
     fontWeight: "400",
-    lineHeight: 16
+    lineHeight: 18,
+    marginTop: 2
   },
   chevronButton: {
     flex: 0,
