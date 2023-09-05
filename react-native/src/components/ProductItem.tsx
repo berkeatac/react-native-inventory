@@ -3,12 +3,33 @@ import { Inventory } from "../store/inventory";
 import { convertDateToDDMMYYYY } from "../utils";
 
 export default ({ record: { item } }: { record: { item: Inventory } }) => {
+  const image = item.fields["Product Image"]
+    ? {
+        uri: item.fields["Product Image"],
+        width: 85
+      }
+    : require("../assets/placeholder.png");
+
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: item.fields["Product Image"], width: 85 }}
-        style={styles.image}
-      />
+      <View
+        style={{
+          flex: 0,
+          flexDirection: "column",
+          width: 85,
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          marginRight: 20
+        }}
+      >
+        <Image
+          source={image}
+          style={
+            item.fields["Product Image"] ? styles.image : styles.placeholder
+          }
+        />
+      </View>
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 1, flexDirection: "column" }}>
           <Text style={styles.title}>{item.fields["Product Name"]}</Text>
@@ -36,7 +57,14 @@ const styles = StyleSheet.create({
     borderRadius: 4
   },
   image: {
-    marginRight: 20
+    width: 85,
+    height: "100%",
+    resizeMode: "contain"
+  },
+  placeholder: {
+    width: 48,
+    height: 48,
+    resizeMode: "contain"
   },
   title: {
     fontSize: 20,
