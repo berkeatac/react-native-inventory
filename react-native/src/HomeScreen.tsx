@@ -5,7 +5,10 @@ import { Appbar, FAB } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors, actions } from "./store/inventory";
 import { RootState } from "./store";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets
+} from "react-native-safe-area-context";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "./App";
 import ProductItem from "./components/ProductItem";
@@ -14,6 +17,7 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
   const fetching = useSelector((state: RootState) => state.inventory.fetching);
   const inventory = useSelector(selectors.selectInventory);
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -28,7 +32,7 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
         <Appbar.Content title="Inventory" />
       </Appbar.Header>
 
-      <SafeAreaView>
+      <View style={{ flex: 1, paddingBottom: insets.bottom }}>
         <FlatList
           data={inventory}
           renderItem={(record) => <ProductItem record={record} />}
@@ -42,8 +46,9 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
           ItemSeparatorComponent={() => (
             <View style={{ flex: 1, height: 12, width: "100%" }} />
           )}
+          style={styles.list}
         />
-      </SafeAreaView>
+      </View>
 
       <SafeAreaView style={styles.fab}>
         <FAB
@@ -65,5 +70,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     alignItems: "center"
+  },
+  list: {
+    marginTop: 16
   }
 });
