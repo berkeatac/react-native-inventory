@@ -10,4 +10,14 @@ const convertDateToDDMMYYYY = (time: string) => {
   return dateString;
 };
 
-export { convertDateToDDMMYYYY };
+const isNewerThanWeek = (time: string) => {
+  const date = new Date(time);
+  const now = new Date();
+
+  const diff = now.getTime() - date.getTime();
+  const diffInDays = diff / (1000 * 3600 * 24);
+
+  return diffInDays < 7;
+};
+
+export { convertDateToDDMMYYYY, isNewerThanWeek };

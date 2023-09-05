@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { Inventory } from "../store/inventory";
-import { convertDateToDDMMYYYY } from "../utils";
+import { convertDateToDDMMYYYY, isNewerThanWeek } from "../utils";
+
+const NewTag = () => {
+  return (
+    <View style={styles.newTagView}>
+      <Image
+        source={require("../assets/new.png")}
+        style={{ width: 29, height: 10 }}
+      />
+    </View>
+  );
+};
 
 export default ({ record: { item } }: { record: { item: Inventory } }) => {
   const [expanded, setExpanded] = useState(false);
@@ -40,6 +51,7 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
               {convertDateToDDMMYYYY(item.createdTime)}
             </Text>
           </View>
+          {isNewerThanWeek(item.createdTime) && <NewTag />}
           <TouchableOpacity
             onPress={() => setExpanded((expanded) => !expanded)}
             style={styles.chevronButton}
@@ -71,6 +83,7 @@ export default ({ record: { item } }: { record: { item: Inventory } }) => {
                   paddingVertical: 2,
                   backgroundColor: "#D4E5FF"
                 }}
+                key={category.toLowerCase().trim()}
               >
                 <Text
                   key={category}
@@ -135,5 +148,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 40,
     height: 40
+  },
+  newTagView: {
+    flex: 0,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 53,
+    height: 26,
+    borderRadius: 9,
+    padding: 8,
+    borderTopRightRadius: 0,
+    backgroundColor: "#333333",
+    marginRight: 8
   }
 });
