@@ -27,7 +27,7 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
   }, [props.navigation]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <Appbar.Header>
         <Appbar.Content title="Inventory" />
       </Appbar.Header>
@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   list: {
-    marginTop: 16
+    paddingTop: 16
   }
 });
