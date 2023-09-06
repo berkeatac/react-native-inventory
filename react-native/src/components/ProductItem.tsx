@@ -7,7 +7,7 @@ const NewTag = () => {
   return (
     <View style={styles.newTagView}>
       <Image
-        source={require("../assets/new.png")}
+        source={require("../assets/images/new.png")}
         style={{ width: 29, height: 10 }}
       />
     </View>
@@ -37,9 +37,9 @@ const ExpansionChevron = ({
       style={styles.chevronButton}
     >
       {expanded ? (
-        <Image source={require("../assets/chevron-up.png")} />
+        <Image source={require("../assets/images/chevron-up.png")} />
       ) : (
-        <Image source={require("../assets/chevron-down.png")} />
+        <Image source={require("../assets/images/chevron-down.png")} />
       )}
     </TouchableOpacity>
   );
@@ -68,7 +68,7 @@ const ProductItem = ({ record: { item } }: { record: { item: Inventory } }) => {
         uri: productImage,
         width: 85
       }
-    : require("../assets/placeholder.png");
+    : require("../assets/images/placeholder.png");
 
   return (
     <View style={styles.container}>
