@@ -14,97 +14,96 @@ const NewTag = () => {
   );
 };
 
-export default ({ record: { item } }: { record: { item: Inventory } }) => {
+const FieldTag = ({ text }: { text: string }) => {
+  return (
+    <View style={styles.fieldTagView}>
+      <Text key={text} style={styles.fieldTagText} numberOfLines={1}>
+        {text}
+      </Text>
+    </View>
+  );
+};
+
+const ExpansionChevron = ({
+  setExpanded,
+  expanded
+}: {
+  expanded: boolean;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={() => setExpanded((expanded) => !expanded)}
+      style={styles.chevronButton}
+    >
+      {expanded ? (
+        <Image source={require("../assets/chevron-up.png")} />
+      ) : (
+        <Image source={require("../assets/chevron-down.png")} />
+      )}
+    </TouchableOpacity>
+  );
+};
+
+const ProductItem = ({ record: { item } }: { record: { item: Inventory } }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const productImage = item.fields["Product Image"]
+  const {
+    fields: {
+      "Product Name": productName,
+      "Product Categories": productCategories,
+      "Product Image": productImage
+    }
+  } = item;
+
+  const renderTags = () =>
+    productCategories
+      .split(", ")
+      .map((category, index) => (
+        <FieldTag text={category} key={`${category.toLowerCase()}-${index}`} />
+      ));
+
+  const imageSrc = productImage
     ? {
-        uri: item.fields["Product Image"],
+        uri: productImage,
         width: 85
       }
     : require("../assets/placeholder.png");
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 0,
-          width: 85,
-          height: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          marginRight: 20
-        }}
-      >
+      <View style={styles.imageView}>
         <Image
-          source={productImage}
-          style={
-            item.fields["Product Image"] ? styles.image : styles.placeholder
-          }
+          source={imageSrc}
+          style={productImage ? styles.image : styles.placeholder}
         />
       </View>
+
       <View style={{ flex: 1, flexDirection: "column" }}>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 1, flexDirection: "column" }}>
-            <Text style={styles.title}>{item.fields["Product Name"]}</Text>
+            <Text style={styles.title}>{productName}</Text>
             <Text style={styles.date}>
               {convertDateToDDMMYYYY(item.createdTime)}
             </Text>
           </View>
+
           {isNewerThanWeek(item.createdTime) && <NewTag />}
-          <TouchableOpacity
-            onPress={() => setExpanded((expanded) => !expanded)}
-            style={styles.chevronButton}
-          >
-            {expanded ? (
-              <Image source={require("../assets/chevron-up.png")} />
-            ) : (
-              <Image source={require("../assets/chevron-down.png")} />
-            )}
-          </TouchableOpacity>
+
+          {productCategories && (
+            <ExpansionChevron expanded={expanded} setExpanded={setExpanded} />
+          )}
         </View>
-        {expanded && item.fields["Product Categories"] && (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              flexWrap: "wrap",
-              columnGap: 4,
-              rowGap: 6,
-              marginTop: 12
-            }}
-          >
-            {item.fields["Product Categories"].split(", ").map((category) => (
-              <View
-                style={{
-                  height: 26,
-                  borderRadius: 48,
-                  paddingHorizontal: 12,
-                  paddingVertical: 2,
-                  backgroundColor: "#D4E5FF"
-                }}
-                key={category.toLowerCase().trim()}
-              >
-                <Text
-                  key={category}
-                  style={{
-                    fontSize: 12,
-                    lineHeight: 22,
-                    fontWeight: "400",
-                    flex: 1
-                  }}
-                  numberOfLines={1}
-                >
-                  {category}
-                </Text>
-              </View>
-            ))}
-          </View>
+
+        {expanded && productCategories && (
+          <View style={styles.fieldTagsContainer}>{renderTags()}</View>
         )}
       </View>
     </View>
   );
 };
+
+export default ProductItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -119,6 +118,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FC",
     marginHorizontal: 16,
     borderRadius: 4
+  },
+  imageView: {
+    flex: 0,
+    width: 85,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20
   },
   image: {
     width: 85,
@@ -161,5 +168,26 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
     backgroundColor: "#333333",
     marginRight: 8
+  },
+  fieldTagsContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 4,
+    rowGap: 6,
+    marginTop: 12
+  },
+  fieldTagView: {
+    height: 26,
+    borderRadius: 48,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    backgroundColor: "#D4E5FF"
+  },
+  fieldTagText: {
+    fontSize: 12,
+    lineHeight: 22,
+    fontWeight: "400",
+    flex: 1
   }
 });
